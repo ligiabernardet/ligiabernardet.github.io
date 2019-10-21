@@ -1,0 +1,433 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>7. CCPP Code Management &#8212; CCPP Technical  documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="8. Technical Aspects of the CCPP Prebuild" href="CCPPPreBuild.html" />
+    <link rel="prev" title="6. Host Side Coding" href="HostSideCoding.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="CCPPPreBuild.html" title="8. Technical Aspects of the CCPP Prebuild"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="HostSideCoding.html" title="6. Host Side Coding"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">CCPP Technical  documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="ccpp-code-management">
+<span id="codemanagement"></span><h1>7. CCPP Code Management<a class="headerlink" href="#ccpp-code-management" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="organization-of-the-code">
+<h2>7.1. Organization of the Code<a class="headerlink" href="#organization-of-the-code" title="Permalink to this headline">¶</a></h2>
+<p>This chapter describes the organization of the code, provides instruction on the GitHub workflow and the code review process, and outlines the release procedure. It is assumed that the reader is familiar with using basic GitHub features and has a GitHub account set up.</p>
+<div class="section" id="ufs-atmosphere">
+<h3>7.1.1. UFS Atmosphere<a class="headerlink" href="#ufs-atmosphere" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference internal" href="Glossary.html#term-ufs"><span class="xref std std-term">UFS</span></a> Atmosphere source code is contained in the NEMSfv3gfs code repository. CCPP users and developers should use the NEMSfv3gfs code and submodules maintained by GMTB in GitHub. For codes whose authoritative repository is in VLab, GMTB synchronizes these with VLab at periodic intervals.</p>
+<p><a class="reference external" href="https://github.com/NCAR/NEMSfv3gfs">https://github.com/NCAR/NEMSfv3gfs</a></p>
+<p>There are five submodules referenced in the NEMSfv3gfs repository</p>
+<p><a class="reference external" href="https://github.com/NCAR/ccpp-framework">https://github.com/NCAR/ccpp-framework</a></p>
+<p><a class="reference external" href="https://github.com/NCAR/ccpp-physics">https://github.com/NCAR/ccpp-physics</a></p>
+<p><a class="reference external" href="https://github.com/NCAR/FV3">https://github.com/NCAR/FV3</a></p>
+<p><a class="reference external" href="https://github.com/NCAR/NEMS">https://github.com/NCAR/NEMS</a></p>
+<p><a class="reference external" href="https://github.com/NCAR/FMS">https://github.com/NCAR/FMS</a></p>
+<p>Users have read-only access to these repositories and as such cannot accidentally destroy any important (shared) branches of these authoritative repositories.</p>
+<p>Some of these repositories are public (no GitHub account required) and some are private. The public repositories (ccpp-framework, ccpp-physics, and Flexible Modeling System - FMS) may be used directly to read or create forks. Write permission is generally restricted, however. The private repositories require access - please send a request and your GitHub username to <a class="reference external" href="mailto:gmtb-help&#37;&#52;&#48;ucar&#46;edu">gmtb-help<span>&#64;</span>ucar<span>&#46;</span>edu</a>.</p>
+<p>The primary development by GMTB, including the latest CCPP developments, are maintained in the following branches:</p>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 67%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Repository (GMTB development version)</p></th>
+<th class="head"><p>Branch name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/NCAR/NEMSfv3gfs">https://github.com/NCAR/NEMSfv3gfs</a></p></td>
+<td><p>gmtb/ccpp</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/NCAR/FV3">https://github.com/NCAR/FV3</a></p></td>
+<td><p>gmtb/ccpp</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/NCAR/ccpp-physics">https://github.com/NCAR/ccpp-physics</a></p></td>
+<td><p>master</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/NCAR/ccpp-framework">https://github.com/NCAR/ccpp-framework</a></p></td>
+<td><p>master</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/NCAR/NEMS">https://github.com/NCAR/NEMS</a></p></td>
+<td><p>gmtb/ccpp</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/NCAR/FMS">https://github.com/NCAR/FMS</a></p></td>
+<td><p>GFS-FMS</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="scm">
+<h3>7.1.2. SCM<a class="headerlink" href="#scm" title="Permalink to this headline">¶</a></h3>
+<p>CCPP developers should use the SCM code and submodules maintained by GMTB in GitHub. The ccpp-framework and ccpp-physics repositories are used by the two models, creating a two-way dependency between them (see <a class="reference internal" href="#committing-changes"><span class="std std-ref">Committing Changes to your Fork</span></a> for implications on the code review and testing procedure).</p>
+<p><a class="reference external" href="https://github.com/NCAR/gmtb-scm">https://github.com/NCAR/gmtb-scm</a></p>
+<p>As for NEMSfv3gfs, there are two submodules referenced in the gmtb-scm repository:</p>
+<p><a class="reference external" href="https://github.com/NCAR/ccpp-framework">https://github.com/NCAR/ccpp-framework</a></p>
+<p><a class="reference external" href="https://github.com/NCAR/ccpp-physics">https://github.com/NCAR/ccpp-physics</a></p>
+<p>Users have read-only access to these repositories and as such cannot accidentally destroy any important (shared) branches of these authoritative repositories. Both CCPP repositories are public (no GitHub account required) and may be used directly to read or create forks. Write permission is generally restricted, however. The SCM repository is private, to request access please send a message and your GitHub username to <a class="reference external" href="mailto:gmtb-help&#37;&#52;&#48;ucar&#46;edu">gmtb-help<span>&#64;</span>ucar<span>&#46;</span>edu</a>.</p>
+<p>The primary development by GMTB, including the latest CCPP developments, are maintained in the following branches:</p>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 68%" />
+<col style="width: 32%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Repository (GMTB development version)</p></th>
+<th class="head"><p>Branch name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/NCAR/gmtb-scm">https://github.com/NCAR/gmtb-scm</a></p></td>
+<td><p>master</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/NCAR/ccpp-physics">https://github.com/NCAR/ccpp-physics</a></p></td>
+<td><p>master</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/NCAR/ccpp-framework">https://github.com/NCAR/ccpp-framework</a></p></td>
+<td><p>master</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="directory-structure-of-ccpp-framework">
+<h3>7.1.3. Directory Structure of ccpp/framework<a class="headerlink" href="#directory-structure-of-ccpp-framework" title="Permalink to this headline">¶</a></h3>
+<p>The following is the directory structure for the ccpp/framework (condensed version):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">├── cmake                  # cmake files for building</span>
+<span class="go">├── doc                    # Documentation for design/implementation</span>
+<span class="go">│                          # and developers guide</span>
+<span class="go">│   ├── CCPPtechnical      # CCPP Technical documentation</span>
+<span class="go">│   │   ├── build</span>
+<span class="go">│   │   └── source</span>
+<span class="go">│   │       ├── _static</span>
+<span class="go">│   │       └── _templates</span>
+<span class="go">│   ├── common            # Latex style file used by various documentation efforts</span>
+<span class="go">│   ├── DevelopersGuide</span>
+<span class="go">│   │   └── images</span>
+<span class="go">│   └── img</span>
+<span class="go">├── schemes                # Example ccpp_prebuild_config.py</span>
+<span class="go">│   ├── check</span>
+<span class="go">├── scripts                # Scripts for ccpp_prebuild.py, metadata</span>
+<span class="go">│                          # parser, etc.</span>
+<span class="go">│   ├── fortran_tools</span>
+<span class="go">│   └── parse_tools</span>
+<span class="go">├── src                    # CCPP framework source code</span>
+<span class="go">│   └── tests              # SDFs and code for testing</span>
+<span class="go">├── test</span>
+<span class="go">│   └── nemsfv3gfs         # NEMSfv3gfs regression test scripts</span>
+<span class="go">└── tests                  # Development for framework upgrades</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="directory-structure-of-ccpp-physics">
+<h3>7.1.4. Directory Structure of ccpp/physics<a class="headerlink" href="#directory-structure-of-ccpp-physics" title="Permalink to this headline">¶</a></h3>
+<p>The following is the directory structure for the ccpp/physics (condensed version):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">├── physics                 # CCPP physics source code</span>
+<span class="go">│   ├── docs                # Scientific documentation (doxygen)</span>
+<span class="go">│   │   ├── img             # Figures for doxygen</span>
+<span class="go">│   │   └── pdftxt          # Text files for documentation</span>
+<span class="go">└── stochastic_physics      # Source code for stochastic physics</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="github-workflow-setting-up-development-repositories">
+<h2>7.2. GitHub Workflow (setting up development repositories)<a class="headerlink" href="#github-workflow-setting-up-development-repositories" title="Permalink to this headline">¶</a></h2>
+<p>The CCPP development practices make use of the GitHub forking workflow. For users not familiar with this concept, this website provides some background information and a tutorial.</p>
+<div class="section" id="creating-forks">
+<h3>7.2.1. Creating Forks<a class="headerlink" href="#creating-forks" title="Permalink to this headline">¶</a></h3>
+<p>The GitHub forking workflow relies on forks (personal copies) of the shared repositories on GitHub. These forks need to be created only once, and only for directories that users will contribute changes to. The following steps describe how to create a fork for the example of the ccpp-physics submodule/repository:</p>
+<blockquote>
+<div><p>Go to <a class="reference external" href="https://github.com/NCAR/ccpp-physics">https://github.com/NCAR/ccpp-physics</a> and make sure you are signed in as your GitHub user.</p>
+<p>Select the “fork” button in the upper right corner.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>If you have already created a fork, this will take you to your fork.</p></li>
+<li><p>If you have not yet created a fork, this will create one for you.</p></li>
+</ul>
+</div></blockquote>
+<p>Note that the repo name in the upper left (blue) will be either “NCAR” or “your GitHub name” which tells you which fork you are looking at.</p>
+</div></blockquote>
+<p>Note that personal forks are not required until a user wishes to make code contributions. The procedure for how to check out the code laid out below can be followed without having created any forks beforehand.</p>
+</div>
+<div class="section" id="checking-out-the-code-nemsfv3gfs">
+<h3>7.2.2. Checking out the Code (NEMSfv3gfs)<a class="headerlink" href="#checking-out-the-code-nemsfv3gfs" title="Permalink to this headline">¶</a></h3>
+<p>Because of the large number of submodules of the central repository NEMSfv3gfs, we strongly recommend setting up passwordless access to GitHub via https or ssh (see <a class="reference external" href="https://help.github.com/categories/authenticating-to-github">https://help.github.com/categories/authenticating-to-github</a>). In the following, we assume access is via https rather than ssh.</p>
+<p>Start with checking out the main repository from the NCAR GitHub</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone -b gmtb/ccpp https://github.com/NCAR/NEMSfv3gfs</span>
+<span class="go">cd NEMSfv3gfs</span>
+<span class="go">git submodule init</span>
+<span class="go">git submodule update</span>
+</pre></div>
+</div>
+<p>At this point, you have checked out the correct branches of all six repositories. Each repository is connected to a remote destination (simply called remote in GitHub language), which points to the NCAR GitHub pages and is labeled as origin. For consistency with the CCPP workflow, we recommend renaming the NCAR remote destination to upstream for all six repositories in order to guarantee that your development will be pushed to your fork and not directly to the NCAR repository. For example:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd ccpp/framework</span>
+<span class="go">git remote rename origin upstream</span>
+<span class="go">cd ../..</span>
+</pre></div>
+</div>
+<p>Checking out remote branches as submodules means that your local branches are in a detached head state, since the submodule points to a specific commit. As long as you are not making any modifications in a certain repository, this is not a problem. If during your development changes are made to the corresponding upstream branch, you can simply navigate to this repository and check out the updated version (example NEMS):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd NEMS</span>
+<span class="go">git remote update</span>
+<span class="go">git checkout upstream/gmtb/ccpp</span>
+<span class="go">cd ..</span>
+</pre></div>
+</div>
+<p>However, if you are making changes in a repository (submodule or main repository), you must create a local branch, for example in NEMSfv3gfs:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git checkout -b my_local_development_branch</span>
+</pre></div>
+</div>
+<p>Once you are ready to contribute the code to the upstream repository, you need to create a pull request (PR; see next section). In order to do so, you will use your own fork of this repository (see previous section) and configure your fork as an additional remote destination, which we typically label as origin. For the same example NEMSfv3gfs:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git remote add origin https://github.com/YOUR_GITHUB_USER/NEMSfv3gfs</span>
+<span class="go">git remote update</span>
+</pre></div>
+</div>
+<p>Then, push your local branch to your fork:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git push origin my_local_development_branch</span>
+</pre></div>
+</div>
+<p>For each repository/submodule, you can check the configured remote destinations and all existing branches (remote and local):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git remote -v show</span>
+<span class="go">git remote update</span>
+<span class="go">git branch -a</span>
+</pre></div>
+</div>
+<p>As opposed to branches without modifications described in step 3, changes to the upstream repository can be brought into the local branch by pulling them down. For the example of submodule FV3 (where a local branch is checked out):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd FV3</span>
+<span class="go">git remote update</span>
+<span class="go">git pull upstream gmtb/ccpp</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="checking-out-the-code-scm">
+<h3>7.2.3. Checking out the Code (SCM)<a class="headerlink" href="#checking-out-the-code-scm" title="Permalink to this headline">¶</a></h3>
+<p>The process for checking out SCM is described in the following, assuming access via https rather than ssh. We strongly recommend setting up passwordless access to GitHub (see <a class="reference external" href="https://help.github.com/categories/authenticating-to-github">https://help.github.com/categories/authenticating-to-github</a>).</p>
+<p>Start with checking out the main repository from the NCAR GitHub</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/NCAR/gmtb-scm</span>
+<span class="go">cd gmtb-scm</span>
+<span class="go">git submodule init</span>
+<span class="go">git submodule update</span>
+</pre></div>
+</div>
+<p>At this point, you have checked out the correct branches of all three repositories. Each repository is connected to a remote destination (simply called remote in GitHub language), which points to the NCAR GitHub pages and is labeled as origin. For consistency with the CCPP workflow, we recommend renaming the NCAR remote destination to upstream for all repositories. For example:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd ccpp/framework</span>
+<span class="go">git remote rename origin upstream</span>
+<span class="go">cd ../..</span>
+</pre></div>
+</div>
+<p>Checking out remote branches means that your local branches are in a detached state, since you cannot commit directly to a remote branch. As long as you are not making any modifications in a certain repository, this is not a problem. If during your development work changes are made to the corresponding upstream branch, you can simply navigate to this repository and check out the updated version (example ccpp-physics):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd ccpp/physics</span>
+<span class="go">git remote update</span>
+<span class="go">git checkout upstream/master</span>
+<span class="go">cd ../..</span>
+</pre></div>
+</div>
+<p>However, if you are making changes in a repository (submodule or main repository), you must create a local branch, for example in gmtb-scm:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git checkout -b my_local_development_branch</span>
+</pre></div>
+</div>
+<p>Once you are ready to contribute the code to the upstream repository, you need to create a PR (see next section). In order to do so, you first need to create your own fork of this repository (see previous section) and configure your fork as an additional remote destination, which we typically label as origin. For the same example gmtb-scm:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git remote add origin https://github.com/YOUR_GITHUB_USER/gmtb-scm</span>
+<span class="go">git remote update</span>
+</pre></div>
+</div>
+<p>Then, push your local branch to your fork:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git push origin my_local_development_branch</span>
+</pre></div>
+</div>
+<p>For each repository/submodule, you can check the configured remote destinations and all existing branches (remote and local):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git remote -v show</span>
+<span class="go">git remote update</span>
+<span class="go">git branch -a</span>
+</pre></div>
+</div>
+<p>As opposed to branches without modifications described in step 3, changes to the upstream repository can be brought into the local branch by pulling them down. For the example of submodule ccpp-physics (where a local branch is checked out):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd ccpp/physics</span>
+<span class="go">git remote update</span>
+<span class="go">git pull upstream master</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="committing-changes-to-your-fork">
+<span id="committing-changes"></span><h2>7.3. Committing Changes to your Fork<a class="headerlink" href="#committing-changes-to-your-fork" title="Permalink to this headline">¶</a></h2>
+<p>Once you have your fork set up to begin code modifications, you should check that the cloned repositories upstream and origin are set correctly:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git remote -v</span>
+</pre></div>
+</div>
+<p>This should point to your fork as origin and the repository you cloned as upstream:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">origin             https://github.com/YOUR_GITHUB_USER/ccpp-physics (fetch)</span>
+<span class="go">origin             https://github.com/YOUR_GIRHUB_USER/ccpp-physics (push)</span>
+<span class="go">upstream   https://github.com/NCAR/ccpp-physics (fetch)</span>
+<span class="go">upstream   https://github.com/NCAR/ccpp-physics (push)</span>
+</pre></div>
+</div>
+<p>Also check what branch you are working on:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git branch</span>
+</pre></div>
+</div>
+<p>This command will show what branch you have checked out on your fork:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">* features/my_local_development_branch</span>
+<span class="go">  master</span>
+</pre></div>
+</div>
+<p>After making modifications and testing, you can commit the changes to your fork.  First check what files have been modified:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git status</span>
+</pre></div>
+</div>
+<p>This git command will provide some guidance on what files need to be added and what files are “untracked”.  To add new files or stage modified files to be committed:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git add filename1 filename2</span>
+</pre></div>
+</div>
+<p>At this point it is helpful to have a description of your changes to these files documented somewhere, since when you commit the changes, you will be prompted for this information.  To commit these changes to your local repository and push them to the development branch on your fork:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git commit</span>
+<span class="go">git push origin features/my_local_development_branch</span>
+</pre></div>
+</div>
+<p>When this is done, you can check the status again:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git status</span>
+</pre></div>
+</div>
+<p>This should show that your working copy is up to date with what is in the repository:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">On branch features/my_local_development_branch</span>
+<span class="go">Your branch is up to date with &#39;origin/features/my_local_development_branch&#39;.</span>
+<span class="go">nothing to commit, working tree clean</span>
+</pre></div>
+</div>
+<p>At this point you can continue development or create a PR as discussed in the next section.</p>
+</div>
+<div class="section" id="contributing-code-code-review-process">
+<h2>7.4. Contributing Code, Code Review Process<a class="headerlink" href="#contributing-code-code-review-process" title="Permalink to this headline">¶</a></h2>
+<p>Once your development is mature, and the testing has been completed (see next section), you are ready to create a PR using GitHub to propose your changes for review.</p>
+<div class="section" id="creating-a-pr">
+<h3>7.4.1. Creating a PR<a class="headerlink" href="#creating-a-pr" title="Permalink to this headline">¶</a></h3>
+<p>Go to the github.com web interface, and navigate to your repository fork and branch. In most cases, this will be in the ccpp-physics repository, hence the following example:</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line">Navigate to: <a class="reference external" href="https://github.com">https://github.com</a>/&lt;yourusername&gt;/ccpp-physics</div>
+<div class="line">Use the drop-down menu on the left-side to select a branch to view your development branch</div>
+<div class="line">Use the button just right of the branch menu, to start a “New Pull Request”</div>
+<div class="line">Fill in a short title (one line)</div>
+<div class="line">Fill in a detailed description, including reporting on any testing you did</div>
+<div class="line">Click on “Create pull request”</div>
+</div>
+</div></blockquote>
+<p>Several people (aka CODEOWNERS) are automatically added to the list of reviewers on the right hand side. If others should be reviewing the code, click on the “reviewers” item on the right hand side and enter their GitHub usernames</p>
+<p>Once the PR has been approved, the change is merged to master by one of the code owners. If there are pending conflicts, this means that the code is not up to date with the trunk. To resolve those, pull the target branch from upstream as described above, solve the conflicts and push the changes to the branch on your fork (this also updates the PR).</p>
+<p>Note. GitHub offers a draft pull request feature that allows users to push their code to GitHub and create a draft PR. Draft PRs cannot be merged and do not automatically initiate notifications to the CODEOWNERS, but allow users to prepare the PR and flag it as “ready for review” once they feel comfortable with it.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">7. CCPP Code Management</a><ul>
+<li><a class="reference internal" href="#organization-of-the-code">7.1. Organization of the Code</a><ul>
+<li><a class="reference internal" href="#ufs-atmosphere">7.1.1. UFS Atmosphere</a></li>
+<li><a class="reference internal" href="#scm">7.1.2. SCM</a></li>
+<li><a class="reference internal" href="#directory-structure-of-ccpp-framework">7.1.3. Directory Structure of ccpp/framework</a></li>
+<li><a class="reference internal" href="#directory-structure-of-ccpp-physics">7.1.4. Directory Structure of ccpp/physics</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#github-workflow-setting-up-development-repositories">7.2. GitHub Workflow (setting up development repositories)</a><ul>
+<li><a class="reference internal" href="#creating-forks">7.2.1. Creating Forks</a></li>
+<li><a class="reference internal" href="#checking-out-the-code-nemsfv3gfs">7.2.2. Checking out the Code (NEMSfv3gfs)</a></li>
+<li><a class="reference internal" href="#checking-out-the-code-scm">7.2.3. Checking out the Code (SCM)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#committing-changes-to-your-fork">7.3. Committing Changes to your Fork</a></li>
+<li><a class="reference internal" href="#contributing-code-code-review-process">7.4. Contributing Code, Code Review Process</a><ul>
+<li><a class="reference internal" href="#creating-a-pr">7.4.1. Creating a PR</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="HostSideCoding.html"
+                        title="previous chapter">6. Host Side Coding</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="CCPPPreBuild.html"
+                        title="next chapter">8. Technical Aspects of the CCPP <em>Prebuild</em></a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/CodeManagement.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="CCPPPreBuild.html" title="8. Technical Aspects of the CCPP Prebuild"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="HostSideCoding.html" title="6. Host Side Coding"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">CCPP Technical  documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019 .
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,588 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>9. Building and Running Host Models &#8212; CCPP Technical  documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="10. Tips for Adding a New Scheme" href="AddingNewSchemes.html" />
+    <link rel="prev" title="8. Technical Aspects of the CCPP Prebuild" href="CCPPPreBuild.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="AddingNewSchemes.html" title="10. Tips for Adding a New Scheme"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="CCPPPreBuild.html" title="8. Technical Aspects of the CCPP Prebuild"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">CCPP Technical  documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="building-and-running-host-models">
+<span id="buildingrunninghostmodels"></span><h1>9. Building and Running Host Models<a class="headerlink" href="#building-and-running-host-models" title="Permalink to this headline">¶</a></h1>
+<p>The following instructions describe how to compile and run the CCPP code with the SCM (<a class="reference internal" href="#scm"><span class="std std-numref">Section 9.1</span></a>) and with the UFS Atmosphere (<a class="reference internal" href="#ufsatmo"><span class="std std-numref">Section 9.2</span></a>). Instructions are for the <em>Theia, Jet</em> and <em>Cheyenne</em> computational platforms, with examples on how to run the code on <em>Theia</em>.</p>
+<div class="section" id="scm">
+<span id="id1"></span><h2>9.1. SCM<a class="headerlink" href="#scm" title="Permalink to this headline">¶</a></h2>
+<p>One option for a CCPP host model is the SCM. This can be a valuable tool for diagnosing the performance of a physics suite, from validating that schemes have been integrated into a suite correctly to deep dives into how physical processes are being represented by the approximating code. In fact, this SCM likely serves as the simplest example for using the CCPP and its framework in an atmospheric model.</p>
+<div class="section" id="system-requirements-libraries-and-tools">
+<h3>9.1.1. System Requirements, Libraries, and Tools<a class="headerlink" href="#system-requirements-libraries-and-tools" title="Permalink to this headline">¶</a></h3>
+<p>The source code for the SCM and CCPP component is in the form of programs written in FORTRAN, FORTRAN 90, and C. In addition, the I/O relies on the netCDF libraries. Beyond the standard scripts, the build system relies on the use of the Python scripting language, along with cmake, GNU make and date.</p>
+<p>The basic requirements for building and running the CCPP and SCM bundle are listed below. The versions listed reflect successful tests and there is no guarantee that the code will work with different versions.</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt>FORTRAN 90+ compiler versions</dt><dd><ul>
+<li><p>ifort 18.0.1.163 and 19.0.2</p></li>
+<li><p>gfortran 6.2, 8.1, and 9.1</p></li>
+<li><p>pgf90 17.7 and 17.9</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>C compiler versions</dt><dd><ul>
+<li><p>icc v18.0.1.163 and 19.0.2</p></li>
+<li><p>gcc 6.2 and 8.1</p></li>
+<li><p>AppleClang 10.0.0.10001145</p></li>
+<li><p>pgcc 17.7 and 17.9</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>cmake versions 2.8.12.1, 2.8.12.2, and 3.6.2</p></li>
+<li><p>netCDF with HDF5, ZLIB and SZIP versions 4.3.0, 4.4.0, 4.4.1.1, 4.5.0, 4.6.1, and 4.6.3 (not 3.x)</p></li>
+<li><p>Python versions 2.7.5, 2.7.9, and 2.7.13 (not 3.x)</p></li>
+<li><p>Libxml2 versions 2.2 and 2.9.7 (not 2.9.9)</p></li>
+</ul>
+</div></blockquote>
+<p>Because these tools and libraries are typically the purview of system administrators to install and maintain, they are considered part of the basic system requirements.
+Further, there are several utility libraries as part of the NCEPlibs package that must be installed prior to building the SCM.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>bacio v2.0.1 - Binary I/O library</p></li>
+<li><p>sp v2.0.2 - Spectral Transformation Library</p></li>
+<li><p>w3nco v2.0.6 - GRIB decoder and encoder library</p></li>
+</ul>
+</div></blockquote>
+<p>These libraries are prebuilt on most NOAA machines using the Intel compiler. For those needing to build the libraries themselves, GMTB recommends using the source code from GitHub at <a class="reference external" href="https://github.com/NCAR/NCEPlibs.git">https://github.com/NCAR/NCEPlibs.git</a>, which includes build files for various compilers and machines using OpenMP flags and which are thread-safe. Instructions for installing NCEPlibs are included on the GitHub repository webpage, but for the sake of example, execute the following for obtaining and building from source in <code class="docutils literal notranslate"><span class="pre">/usr/local/NCEPlibs</span></code> on a Mac:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">mkdir /usr/local/NCEPlibs</span>
+<span class="go">cd /usr/local/src</span>
+<span class="go">git clone https://github.com/NCAR/NCEPlibs.git</span>
+<span class="go">cd NCEPlibs</span>
+<span class="go">./make_ncep_libs.sh -s macosx -c gnu -d /usr/local/NCEPlibs -o 1</span>
+</pre></div>
+</div>
+<p>Once NCEPlibs is built, the <code class="docutils literal notranslate"><span class="pre">NCEPLIBS_DIR</span></code> environment variable must be set to the location of the installation. For example, if NCEPlibs was installed in <code class="docutils literal notranslate"><span class="pre">/usr/local/NCEPlibs</span></code>, one would execute</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">export NCEPLIB_DIR=/usr/local/NCEPlibs</span>
+</pre></div>
+</div>
+<p>If using <em>Theia</em> or <em>Cheyenne</em> HPC systems, this environment variable is automatically set to an appropriate installation of NCEPlibs on those machines through use of one of the setup scripts described below.</p>
+</div>
+<div class="section" id="building-and-running-the-scm">
+<h3>9.1.2. Building and Running the SCM<a class="headerlink" href="#building-and-running-the-scm" title="Permalink to this headline">¶</a></h3>
+<p>Instructions for downloading the code are provided in <a class="reference internal" href="CodeManagement.html#codemanagement"><span class="std std-numref">Chapter 7</span></a>. Here are the steps to compile and run SCM:</p>
+<ul>
+<li><p>Run the CCPP <em>prebuild</em> script to match required physics variables with those available from the dycore (SCM) and to generate physics <em>caps</em> and <code class="docutils literal notranslate"><span class="pre">makefile</span></code> segments.</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">./ccpp/framework/scripts/ccpp_prebuild.py --config=./ccpp/config/ccpp_prebuild_config.py [ -- debug ]</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Change directory to the top-level SCM directory.</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd scm</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>(Optional) Run the machine setup script if necessary. This script loads compiler modules (Fortran 2003-compliant), netCDF module, etc. and sets compiler environment variables.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">etc/Theia_setup_intel.csh</span></code> (for csh) or <code class="docutils literal notranslate"><span class="pre">.</span> <span class="pre">etc/Theia_setup_intel.sh</span></code> (for bash)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">etc/Theia_setup_gnu.csh</span></code> (for csh) or <code class="docutils literal notranslate"><span class="pre">.</span> <span class="pre">etc/Theia_setup_gnu.sh</span></code> (for bash)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">etc/Theia_setup_pgi.csh</span></code> (for csh) or <code class="docutils literal notranslate"><span class="pre">.</span> <span class="pre">etc/Theia_setup_pgi.sh</span></code> (for bash)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">etc/Cheyenne_setup_intel.csh</span></code> (for csh) or <code class="docutils literal notranslate"><span class="pre">.</span> <span class="pre">etc/Cheyenne_setup_intel.sh</span></code> (for bash)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">etc/Cheyenne_setup_gnu.csh</span></code> (for csh) or <code class="docutils literal notranslate"><span class="pre">.</span> <span class="pre">etc/Cheyenne_setup_gnu.sh</span></code> (for bash)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">etc/Cheyenne_setup_pgi.csh</span></code> (for csh) or <code class="docutils literal notranslate"><span class="pre">.</span> <span class="pre">etc/Cheyenne_setup_pgi.sh</span></code> (for bash)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">etc/UBUNTU_setup.csh</span></code> (for csh) or <code class="docutils literal notranslate"><span class="pre">.</span> <span class="pre">etc/UBUNTU_setup.sh</span></code> (for bash) if following the instructions in <code class="docutils literal notranslate"><span class="pre">doc/README_UBUNTU.txt</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">etc/CENTOS_setup.csh</span></code> (for csh) or <code class="docutils literal notranslate"><span class="pre">.</span> <span class="pre">etc/CENTOS_setup.sh</span></code> (for bash) if following the instructions in <code class="docutils literal notranslate"><span class="pre">doc/README_CENTOS.txt</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">etc/MACOSX_setup.csh</span></code> (for csh) or <code class="docutils literal notranslate"><span class="pre">.</span> <span class="pre">etc/MACOSX_setup.sh</span></code> (for bash) if following the instructions in <code class="docutils literal notranslate"><span class="pre">doc/README_MACOSX.txt</span></code></p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If using a local Linux or Mac system, we provide instructions for how to set up your development system (compilers and libraries) in <code class="docutils literal notranslate"><span class="pre">doc/README_{MACOSX,UBUNTU,CENTOS}.txt</span></code>. If following these, you will need to run the respective setup script listed above. If your computing environment was previously set up to use modern compilers with an associated netCDF installation, it may not be necessary, although we recommend setting environment variables such as <code class="docutils literal notranslate"><span class="pre">CC</span></code> and <code class="docutils literal notranslate"><span class="pre">FC</span></code>. For version 3.0 and above, it is required to have the <code class="docutils literal notranslate"><span class="pre">NETCDF</span></code> environment variable set to the path of the netCDF installation that was compiled with the same compiler used in the following steps. Otherwise, the <code class="docutils literal notranslate"><span class="pre">cmake</span></code> step will not complete successfully.</p>
+</div>
+<ul>
+<li><p>Make a build directory and change into it.</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">mkdir bin &amp;&amp; cd bin</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Invoke cmake on the source code to build using one of the commands below.</p></li>
+<li><p>Without threading / OpenMP</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cmake ../src</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>With threading / OpenMP</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cmake -DOPENMP=ON ../ src</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Debug mode</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cmake -DCMAKE_BUILD_TYPE=Debug ../ src</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">cmake</span></code> cannot find <code class="docutils literal notranslate"><span class="pre">libxml2</span></code> because it is installed in a non-standard location, add the following to the <code class="docutils literal notranslate"><span class="pre">cmake</span></code> command.</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">-DPC_LIBXML_INCLUDEDIR=...</span>
+<span class="go">-DPC_LIBXML_LIBDIR=...</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Compile with <code class="docutils literal notranslate"><span class="pre">make</span></code> command. Add <code class="docutils literal notranslate"><span class="pre">VERBOSE=1</span></code> to obtain more information on the build process.</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">make</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+<p>Note that this will produce executable <code class="docutils literal notranslate"><span class="pre">gmtb_scm</span></code> and library <code class="docutils literal notranslate"><span class="pre">libccppphys.so.X.Y.Z</span></code> (where X is a major version number; Y is a minor version number, and Z is a patchlevel) and <code class="docutils literal notranslate"><span class="pre">libccppphys.so</span></code>, which is a link to <code class="docutils literal notranslate"><span class="pre">libccppphys.so.X.Y.Z</span></code>. The library, which is located in <code class="docutils literal notranslate"><span class="pre">ccpp/lib</span></code>, will be dynamically linked to the executable at runtime.</p>
+<p>If compilation successfully completes, a working executable named <code class="docutils literal notranslate"><span class="pre">gmtb_scm</span></code> will have been created in the <code class="docutils literal notranslate"><span class="pre">bin</span></code> directory.</p>
+<p>Although <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clean</span></code> is not currently implemented, an out-of-source build is used, so all that is required to clean the <code class="docutils literal notranslate"><span class="pre">build/run</span></code> directory is (from the <code class="docutils literal notranslate"><span class="pre">bin</span></code> directory)</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pwd #confirm that you are in the build/run directory before deleting files</span>
+<span class="go">rm -rfd *</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This command can be dangerous (deletes files without confirming), so make sure that you’re in the right directory before executing!</p>
+</div>
+<p>There are several test cases provided with this version of the SCM. For all cases, the SCM will go through the time steps, applying forcing and calling the physics defined in the chosen SDF using physics configuration options from an associated namelist. The model is executed through one of two Python run scripts that are pre-staged into the <code class="docutils literal notranslate"><span class="pre">bin</span></code> directory: <code class="docutils literal notranslate"><span class="pre">run_gmtb_scm.py</span></code> or <code class="docutils literal notranslate"><span class="pre">multi_run_gmtb_scm.py</span></code>. The former sets up and runs one integration while the latter sets up and runs several integrations serially.</p>
+<p><strong>Single Run Script Usage</strong></p>
+<p>Running a case requires three pieces of information: the case to run (consisting of initial conditions, geolocation, forcing data, etc.), the physics suite to use (through a CCPP SDF), and a physics namelist (that specifies configurable physics options to use). Cases are set up via their own namelists in <code class="docutils literal notranslate"><span class="pre">../etc/case_config</span></code>. A default physics suite is provided as a user-editable variable in the script and default namelists are associated with each physics suite (through <code class="docutils literal notranslate"><span class="pre">../src/default_namelists.py</span></code>), so, technically, one must only specify a case to run with the SCM. The single run script’s interface is described below.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">./run_gmtb_scm.py -c CASE_NAME [-s SUITE_NAME] [-n PHYSICS_NAMELIST_PATH] [-g]</span>
+</pre></div>
+</div>
+<p>When invoking the run script, the only required argument is the name of the case to run. The case name used must match one of the case configuration files located in <code class="docutils literal notranslate"><span class="pre">../etc/case_config</span></code> (<em>without the .nml extension!</em>). If specifying a suite other than the default, the suite name used must match the value of the suite name in one of the SDFs located in <code class="docutils literal notranslate"><span class="pre">../../ccpp/suites</span></code> (Note: not the filename of the SDF). As part of the third CCPP release, the following suite names are valid:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>SCM_GFS_v15</p></li>
+<li><p>SCM_GFS_v15plus</p></li>
+<li><p>SCM_csawmg</p></li>
+<li><p>SCM_GSD_v0</p></li>
+</ul>
+</div></blockquote>
+<dl class="simple">
+<dt>Note that using the Thompson microphysics scheme (as in <code class="docutils literal notranslate"><span class="pre">SCM_GSD_v0</span></code>) requires the existence of lookup tables during its initialization phase. As of the release, computation of the lookup tables has been prohibitively slow with this model, so it is highly suggested that they be downloaded and staged to use this scheme (and the <code class="docutils literal notranslate"><span class="pre">SCM_GSD_v0</span></code> suite). Pre-computed tables have been created and are available for download at the following URLs:</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="https://dtcenter.org/GMTB/freezeH2O.dat">https://dtcenter.org/GMTB/freezeH2O.dat</a> (243 M)</p></li>
+<li><p><a class="reference external" href="https://dtcenter.org/GMTB/qr_acr_qg.dat">https://dtcenter.org/GMTB/qr_acr_qg.dat</a> (49 M)</p></li>
+<li><p><a class="reference external" href="https://dtcenter.org/GMTB/qr_acr_qs.dat">https://dtcenter.org/GMTB/qr_acr_qs.dat</a> (32 M)</p></li>
+</ul>
+</dd>
+</dl>
+<p>These files should be staged in <code class="docutils literal notranslate"><span class="pre">gmtb-scm/scm/data/physics_input_data</span></code> prior to executing the run script. Since binary files can be system-dependent (due to endianness), it is possible that these files will not be read correctly on your system. For reference, the linked files were generated on <em>Theia</em> using the Intel v18 compiler.</p>
+<p>Also note that some cases require specified surface fluxes. Special SDFs that correspond to the suites listed above have been created and use the <code class="docutils literal notranslate"><span class="pre">*_prescribed_surface</span></code> decoration. It is not necessary to specify this filename decoration when specifying the suite name. If the <code class="docutils literal notranslate"><span class="pre">spec_sfc_flux</span></code> variable in the configuration file of the case being run is set to <code class="docutils literal notranslate"><span class="pre">.true.</span></code>, the run script will automatically use the special SDF that corresponds to the chosen suite from the list above.</p>
+<p>If specifying a namelist other than the default, the value must be an entire filename that exists in <code class="docutils literal notranslate"><span class="pre">../../ccpp/physics_namelists</span></code>. Caution should be exercised when modifying physics namelists since some redundancy between flags to control some physics parameterizations and scheme entries in the SDFs currently exists. Values of numerical parameters are typically OK to change without fear of inconsistencies. Lastly, the <code class="docutils literal notranslate"><span class="pre">-g</span></code> flag can be used to run the executable through the <code class="docutils literal notranslate"><span class="pre">gdb</span></code> debugger (assuming it is installed on the system).</p>
+<p>If the run aborts with the error message</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="go">gmtb_scm: libccppphys.so.X.X.X: cannot open shared object file: No such file or directory</span>
+</span></pre></div>
+</div>
+<p>the environment variable <code class="docutils literal notranslate"><span class="pre">LD_LIBRARY_PATH</span></code> must be set to</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">export LD_LIBRARY_PATH=$PWD/ccpp/physics:$LD_LIBRARY_PATH</span>
+</pre></div>
+</div>
+<p>before running the model.</p>
+<p>A netCDF output file is generated in the location specified in the case configuration file, if the <code class="docutils literal notranslate"><span class="pre">output_dir</span></code> variable exists in that file. Otherwise an output directory is constructed from the case, suite, and namelist used (if different from the default). All output directories are placed in the <code class="docutils literal notranslate"><span class="pre">bin</span></code> directory. Any standard netCDF file viewing or analysis tools may be used to examine the output file (ncdump, ncview, NCL, etc).</p>
+<p><strong>Multiple Run Script Usage</strong></p>
+<p>A second Python script is provided for automating the execution of multiple integrations through repeated calling of the single run script. From the run directory, one may use this script through the following interface.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">./multi_run_gmtb_scm.py {[-c CASE_NAME] [-s SUITE_NAME] [-f PATH_TO_FILE]} [-v{v}] [-t]</span>
+</pre></div>
+</div>
+<p>No arguments are required for this script. The <code class="docutils literal notranslate"><span class="pre">-c</span></code> or <code class="docutils literal notranslate"><span class="pre">--case</span></code>, <code class="docutils literal notranslate"><span class="pre">-s</span></code> or <code class="docutils literal notranslate"><span class="pre">–-suite</span></code>, or <code class="docutils literal notranslate"><span class="pre">-f</span></code> or <code class="docutils literal notranslate"><span class="pre">–-file</span></code> options form a mutually-exclusive group, so exactly one of these is allowed at one time. If <code class="docutils literal notranslate"><span class="pre">–c</span></code> is specified with a case name, the script will run a set of integrations for all supported suites (defined in <code class="docutils literal notranslate"><span class="pre">../src/supported_suites.py</span></code>) for that case. If <code class="docutils literal notranslate"><span class="pre">-s</span></code> is specified with a suite name, the script will run a set of integrations for all supported cases (defined in <code class="docutils literal notranslate"><span class="pre">../src/supported_cases.py</span></code>) for that suite. If <code class="docutils literal notranslate"><span class="pre">-f</span></code> is specified with the path to a filename, it will read in lists of cases, suites, and namelists to use from that file. If multiple namelists are specified in the file, there either must be one suite specified or the number of suites must match the number of namelists. If none of the <code class="docutils literal notranslate"><span class="pre">-c</span></code> or <code class="docutils literal notranslate"><span class="pre">--case</span></code>, <code class="docutils literal notranslate"><span class="pre">-s</span></code> or <code class="docutils literal notranslate"><span class="pre">–-suite</span></code>, or <code class="docutils literal notranslate"><span class="pre">-f</span></code> or <code class="docutils literal notranslate"><span class="pre">–-file</span></code> options group is specified, the script will run through all permutations of supported cases and suites (as defined in the files previously mentioned).</p>
+<p>In addition to the main options, some helper options can also be used with any of those above. The <code class="docutils literal notranslate"><span class="pre">-vv</span></code> or <code class="docutils literal notranslate"><span class="pre">–-verbose</span></code> option can be used to output more information from the script to the console and to a log file. If this option is not used, only completion progress messages are written out. If <code class="docutils literal notranslate"><span class="pre">-v</span></code> is used, the script will write out completion progress messages and all messages and output from the single run script. If <code class="docutils literal notranslate"><span class="pre">-vv</span></code> is used, the script will also write out all messages and single run script output to a log file (<code class="docutils literal notranslate"><span class="pre">multi_run_gmtb_scm.log</span></code>) in the <code class="docutils literal notranslate"><span class="pre">bin</span></code> directory. The final option, <code class="docutils literal notranslate"><span class="pre">-t</span></code> or <code class="docutils literal notranslate"><span class="pre">–-timer</span></code>, can be used to output the elapsed time for each integration executed by the script. Note that the execution time includes file operations performed by the single run script in addition to the execution of the underlying (Fortran) SCM executable. By default, this option will execute one integration of each subprocess. Since some variability is expected for each model run, if greater precision is required, the number of integrations for timing averaging can be set through an internal script variable. This option can be useful, for example, for getting a rough idea of relative computational expense of different physics suites.</p>
+<p><strong>Batch Run Script</strong></p>
+<p>If using the model on HPC resources and significant amounts of processor time is anticipated for the experiments, it will likely be necessary to submit a job through the HPC’s batch system. An example script has been included in the repository for running the model on <em>Theia</em>’s batch system (SLURM). It is located in <code class="docutils literal notranslate"><span class="pre">gmtb-scm/scm/etc/gmtb_scm_slurm_example.py</span></code>. Edit the job_name, account, etc. to suit your needs and copy to the <code class="docutils literal notranslate"><span class="pre">bin</span></code> directory. The case name to be run is included in the command variable. To use, invoke</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">./gmtb_scm_slurm_example.py</span>
+</pre></div>
+</div>
+<p>from the <code class="docutils literal notranslate"><span class="pre">bin</span></code> directory.</p>
+<p>Additional information on the SCM can be found at <a class="reference external" href="https://dtcenter.org/gmtb/users/ccpp/docs/SCM-CCPP-Guide_v3.0.pdf">https://dtcenter.org/gmtb/users/ccpp/docs/SCM-CCPP-Guide_v3.0.pdf</a></p>
+</div>
+</div>
+<div class="section" id="ufs-atmosphere">
+<span id="ufsatmo"></span><h2>9.2. UFS Atmosphere<a class="headerlink" href="#ufs-atmosphere" title="Permalink to this headline">¶</a></h2>
+<p>Another option for a CCPP host model is the UFS Atmosphere, located in the umbrella repository NEMSfv3gfs.</p>
+<div class="section" id="system-requirements-libraries-and-compilers">
+<h3>9.2.1. System Requirements, Libraries, and Compilers<a class="headerlink" href="#system-requirements-libraries-and-compilers" title="Permalink to this headline">¶</a></h3>
+<p>The build system for the UFS with CCPP relies on the use of the Python scripting language, along with <code class="docutils literal notranslate"><span class="pre">cmake</span></code>.</p>
+<p>The basic requirements for building and running the UFS with CCPP are listed below. The versions listed reflect successful tests and there is no guarantee that the code will work with different versions.</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt>FORTRAN 90+ compiler versions</dt><dd><ul>
+<li><p>ifort 15.1.133, 18.0.1.163 and 19.0.2</p></li>
+<li><p>gfortran 6.2, 8.1, and 9.1</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>C compiler versions</dt><dd><ul>
+<li><p>icc v18.0.1.163 and 19.0.2</p></li>
+<li><p>gcc 6.2.0 and 8.1</p></li>
+<li><p>AppleClang 10.0</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>MPI job scheduler versions</dt><dd><ul>
+<li><p>mpt 2.19</p></li>
+<li><p>impi 5.1.1.109 and 5.1.2.150</p></li>
+<li><p>mpich 3.2.1</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>cmake versions 2.8.12.1, 2.8.12.2, and 3.6.2</p></li>
+<li><p>netCDF with HDF5, ZLIB and SZIP versions 4.3.0, 4.4.0, 4.4.1.1, 4.5.0, 4.6.1, and 4.6.3 (not 3.x)</p></li>
+<li><p>Python versions 2.7.5, 2.7.9, and 2.7.13 (not 3.x)</p></li>
+</ul>
+</div></blockquote>
+<p>A number of NCEP libraries are required to build and run FV3 and are listed in <a class="reference internal" href="#ncep-lib-fv3"><span class="std std-numref">Table 9.1</span></a>.</p>
+<span id="ncep-lib-fv3"></span><table class="docutils align-center" id="id2">
+<caption><span class="caption-number">Table 9.1 </span><span class="caption-text"><em>NCEP libraries required to build the UFS Atmosphere</em></span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 14%" />
+<col style="width: 57%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Library</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>bacio</p></td>
+<td><p>2.0.1</p></td>
+<td><p>NCEP binary I/O library</p></td>
+</tr>
+<tr class="row-odd"><td><p>ip</p></td>
+<td><p>2.0.0/3.0.0</p></td>
+<td><p>NCEP general interpolation library</p></td>
+</tr>
+<tr class="row-even"><td><p>nemsio</p></td>
+<td><p>2.2.3</p></td>
+<td><p>NEMS I/O routines</p></td>
+</tr>
+<tr class="row-odd"><td><p>sp</p></td>
+<td><p>2.0.2</p></td>
+<td><p>NCEP spectral grid transforms</p></td>
+</tr>
+<tr class="row-even"><td><p>w3emc</p></td>
+<td><p>2.2.0</p></td>
+<td><p>NCEP/EMC library for decoding data in GRIB1 format</p></td>
+</tr>
+<tr class="row-odd"><td><p>w3nco/v2.0.6</p></td>
+<td><p>2.0.6</p></td>
+<td><p>NCEP/NCO library for decoding data in GRIB1 format</p></td>
+</tr>
+</tbody>
+</table>
+<p>These libraries are prebuilt on most NOAA machines using the Intel compiler. For those needing to build the libraries themselves, GMTB recommends using the source code from GitHub at <a class="reference external" href="https://github.com/NCAR/NCEPlibs.git">https://github.com/NCAR/NCEPlibs.git</a>, which includes build files for various compilers and machines using OpenMP flags and which are thread-safe.</p>
+<p>In addition to the NCEP libraries, some additional external libraries are needed (<a class="reference internal" href="#ext-lib-fv3"><span class="std std-numref">Table 9.2</span></a>).</p>
+<span id="ext-lib-fv3"></span><table class="docutils align-center" id="id3">
+<caption><span class="caption-number">Table 9.2 </span><span class="caption-text"><em>External libraries necessary to build the UFS Atmosphere</em></span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 18%" />
+<col style="width: 67%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Library</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ESMF</p></td>
+<td><p>V7.1.0r and v8.0.0_bs21</p></td>
+<td><p>Earth System Modeling Framework for coupling applications</p></td>
+</tr>
+<tr class="row-odd"><td><p>netCDF</p></td>
+<td><p>4.3.0 and 4.6.1</p></td>
+<td><p>Interface to data access functions for storing and retrieving data arrays</p></td>
+</tr>
+<tr class="row-even"><td><p>SIONlib (optional)</p></td>
+<td><p>v1.7.2</p></td>
+<td><p>Parallel I/O library (link) that can be used to read precomputed lookup tables instead of computing them on the fly (or using traditional Fortran binary data files)</p></td>
+</tr>
+</tbody>
+</table>
+<p>The Earth System Modeling Framework (ESMF), the SIONlib, the NCEPlibs, and the netCDF libraries must be built with the same compiler as the other components of the UFS Atmosphere.</p>
+</div>
+<div class="section" id="building-the-ufs-atmosphere">
+<h3>9.2.2. Building the UFS Atmosphere<a class="headerlink" href="#building-the-ufs-atmosphere" title="Permalink to this headline">¶</a></h3>
+<p>A complete listing and description of the FV3 build options were discussed in <a class="reference internal" href="ConfigBuildOptions.html#configbuildoptions"><span class="std std-numref">Chapter 3</span></a> and are shown in <a class="reference internal" href="ConfigBuildOptions.html#ccpp-build-option"><span class="std std-numref">Figure 3.1</span></a>. This section will describe the commands needed to build the different options using the script <code class="docutils literal notranslate"><span class="pre">compile.sh</span></code> provided in the NEMSfv3gfs distribution. This script calls <code class="docutils literal notranslate"><span class="pre">ccpp_prebuild.py</span></code>, so users do not need to run the <em>prebuild</em> step manually. All builds using <code class="docutils literal notranslate"><span class="pre">compile.sh</span></code> are made from the <code class="docutils literal notranslate"><span class="pre">./tests</span></code> directory of NEMSfv3gfs and follow the basic command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">./compile.sh $PWD/../FV3 system.compiler &#39;MAKEOPTS&#39;</span>
+</pre></div>
+</div>
+<p>Here, <code class="docutils literal notranslate"><span class="pre">system</span></code> stands for the machine on which the code is compiled and can be any of the following machines and compilers: <em>theia, jet, cheyenne, gaea, stampede, wcoss_cray, wcoss_dell_p3, supermuc_phase2, macosx</em>, or <em>linux</em>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">compiler</span></code> stands for the compiler to use and depends on the system. For <em>theia</em> and <em>cheyenne</em>, the available options are <code class="docutils literal notranslate"><span class="pre">intel</span></code> and <code class="docutils literal notranslate"><span class="pre">gnu</span></code>. For <em>macosx</em> and <em>linux</em>, the only tested compiler is <code class="docutils literal notranslate"><span class="pre">gnu</span></code>. For all other platforms, <code class="docutils literal notranslate"><span class="pre">intel</span></code> is the only option at this time.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">MAKEOPTS</span></code> string, enclosed in single or double quotes, allows to specify options for compiling the code. The following options are of interest for building the CCPP version of NEMSfv3gfs:</p>
+<ul class="simple">
+<li><p><strong>CCPP=Y</strong> - enables <a class="reference internal" href="Glossary.html#term-ccpp"><span class="xref std std-term">CCPP</span></a> (default is <code class="docutils literal notranslate"><span class="pre">N</span></code>)</p></li>
+<li><p><strong>STATIC=Y</strong> - enables the CCPP static mode; requires <code class="docutils literal notranslate"><span class="pre">CCPP=Y</span></code> (default is <code class="docutils literal notranslate"><span class="pre">N</span></code>) and <code class="docutils literal notranslate"><span class="pre">SUITES=...</span></code> (see below)</p></li>
+<li><p><strong>SUITES=XYZ, ABC, DEF, …</strong> - specify SDF(s) to use when compiling the code in CCPP static mode; SDFs are located in <code class="docutils literal notranslate"><span class="pre">ccpp/suites/</span></code>, omit the path in the argument; requires <code class="docutils literal notranslate"><span class="pre">CCPP=Y</span> <span class="pre">STATIC=Y</span></code> (default is <code class="docutils literal notranslate"><span class="pre">‘’</span></code>)</p></li>
+<li><p><strong>SION=Y</strong> - enables support for the SIONlib I/O library (used by CCPP to read precomputed lookup tables instead of computing them on the fly); available on <em>Theia, Cheyenne, Jet</em>; also available on <em>Mac OS X</em> and <em>Linux</em> if instructions in <code class="docutils literal notranslate"><span class="pre">doc/README_{macosx,linux}.txt</span></code> are followed (default is <code class="docutils literal notranslate"><span class="pre">N</span></code>)</p></li>
+<li><p><strong>32BIT=Y</strong> - compiles FV3 dynamical core in single precision; note that physics are always compiled in double precision; this option is only available on <em>Theia, Cheyenne</em>, and <em>Jet</em> (default is <code class="docutils literal notranslate"><span class="pre">N</span></code>)</p></li>
+<li><p><strong>REPRO=Y</strong> - compiles code in <a class="reference internal" href="Glossary.html#term-repro"><span class="xref std std-term">REPRO</span></a> mode, i.e. removes certain compiler optimization flags used in the default <a class="reference internal" href="Glossary.html#term-prod"><span class="xref std std-term">PROD</span></a> mode to obtain bit-for-bit (b4b) identical results between CCPP and non-CCPP code (default is <code class="docutils literal notranslate"><span class="pre">N</span></code>)</p></li>
+<li><p><strong>DEBUG=Y</strong> - compiles code in DEBUG mode, i.e. removes all optimization of <a class="reference internal" href="Glossary.html#term-prod"><span class="xref std std-term">PROD</span></a> mode and add bound checks; mutually exclusive with <code class="docutils literal notranslate"><span class="pre">REPRO=Y</span></code> (default is <code class="docutils literal notranslate"><span class="pre">N</span></code>)</p></li>
+<li><p><strong>TRANSITION=Y</strong> - applies selective lowering of optimization for selected files to obtain b4b with non-CCPP code in PROD mode (only when using Intel 15 on <em>Theia</em>)</p></li>
+</ul>
+<p>Examples:</p>
+<ul>
+<li><p>Compile non-CCPP code with 32-bit dynamics on <em>Theia</em> with the Intel compiler</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">./compile.sh $PWD/../FV3 theia.intel ‘32BIT=Y’</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Compile dynamic CCPP code in <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code> mode on <em>Jet</em></p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">./compile.sh $PWD/../FV3 jet.intel ‘CCPP=Y DEBUG=Y’</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Compile static CCPP code for the CPT suite on <em>Linux</em> with the GNU compiler, enable support for the SIONlib I/O library (requires that the library to be installed)</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">./compile.sh $PWD/../FV3 linux.gnu ‘SION=Y CCPP=Y STATIC=Y SUITES=FV3_CPT_v0’</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p><em>Cheyenne</em> static build with multiple suites:</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">./compile.sh $PWD/../FV3 cheyenne.intel ‘CCPP=Y STATIC=Y SUITES=FV3_GFS_v15,FV3_CPT_v0’</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="running-the-ufs-atmosphere-using-the-regression-tests-rts">
+<h3>9.2.3. Running the UFS Atmosphere Using the Regression Tests (RTs)<a class="headerlink" href="#running-the-ufs-atmosphere-using-the-regression-tests-rts" title="Permalink to this headline">¶</a></h3>
+<p>Regression testing is the process of testing changes to the programs to make sure that the existing functionalities still work when changes are introduced. By running the RTs (or a subset of them by copying a RT configuration file and editing it), the code is compiled, the run directories are set up, and the code is executed. The results are typically compared against a pre-existing baseline, but in certain occasions it is necessary to first create a new baseline (for example, in a new platform where a baseline does not exist or when it is expected that a new development will change the answer). Because the RTs set up the run directories, this is a useful and easy way to get started, since all the model configuration files and necessary input data (initial conditions, fixed data) are copied into the right place.</p>
+<div class="section" id="overview-of-the-rts">
+<h4>9.2.3.1. Overview of the RTs<a class="headerlink" href="#overview-of-the-rts" title="Permalink to this headline">¶</a></h4>
+<p>The RT configuration files are located in <code class="docutils literal notranslate"><span class="pre">./tests</span></code> relative to the top-level directory of NEMSfv3gfs and have names <code class="docutils literal notranslate"><span class="pre">rt*.conf</span></code>. The default RT configuration file, supplied with the NEMSfv3gfs master, compares the results from the non-CCPP code to the <em>official baseline</em> and is called <code class="docutils literal notranslate"><span class="pre">rt.conf</span></code>. Before running the RT script <code class="docutils literal notranslate"><span class="pre">rt.sh</span></code> in the same directory, the user has to set one or more environment variables and potentially modify the script to change the location of the automatically created run directories. The environment variables are <code class="docutils literal notranslate"><span class="pre">ACCNR</span></code> (mandatory unless the user is a member of the default project <em>nems</em>; sets the account to be charged for running the RTs), <code class="docutils literal notranslate"><span class="pre">NEMS_COMPILER</span></code> (optional for the <code class="docutils literal notranslate"><span class="pre">intel</span></code> compiler option, set to <code class="docutils literal notranslate"><span class="pre">gnu</span></code> to switch), and potentially <code class="docutils literal notranslate"><span class="pre">RUNDIR_ROOT</span></code>. <code class="docutils literal notranslate"><span class="pre">RUNDIR_ROOT</span></code> allows the user to specify an alternative location for the RT run directories underneath which directories called <code class="docutils literal notranslate"><span class="pre">rt_$PID</span></code> are created (<code class="docutils literal notranslate"><span class="pre">$PID</span></code> is the process identifier of the <code class="docutils literal notranslate"><span class="pre">rt.sh</span></code> invocation). This may be required on systems where the user does not have write permissions in the default run directory tree.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">export ACCNR=...</span>
+<span class="go">export NEMS_COMPILER=intel</span>
+<span class="go">export RUNDIR_ROOT=/full/path/under/which/rt_$PID/will/be/created</span>
+</pre></div>
+</div>
+<p>Running the full default RT suite defined in <code class="docutils literal notranslate"><span class="pre">rt.conf</span></code> using the script <code class="docutils literal notranslate"><span class="pre">rt.sh</span></code>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">./rt.sh -f</span>
+</pre></div>
+</div>
+<p>This command can only be used on a NOAA machine using the Intel compiler, where the output of a non-CCPP build using the default Intel version is compared against the <em>official baseline</em>. For information on testing the CCPP code, or using alternate computational platforms, see the following sections.</p>
+<p>This command and all others below produce log output in <code class="docutils literal notranslate"><span class="pre">./tests/log_machine.compiler</span></code>. These log files contain information on the location of the run directories that can be used as templates for the user. Each <code class="docutils literal notranslate"><span class="pre">rt*.conf</span></code> contains one or more compile commands preceding a number of tests.</p>
+</div>
+<div class="section" id="baselines">
+<h4>9.2.3.2. Baselines<a class="headerlink" href="#baselines" title="Permalink to this headline">¶</a></h4>
+<p>Regression testing is only possible on machines for which baselines exist. EMC maintains <em>official baselines</em> of non-CCPP runs on <em>Jet</em> and <em>Wcoss</em> created with the Intel compiler. GMTB maintains additional baselines on <em>Theia, Jet, Cheyenne</em>, and <em>Gaea</em>. While GMTB is trying to keep up with changes to the official repositories, baselines maintained by GMTB are not guaranteed to be up-to-date.</p>
+<p>When porting the code to a new machine, it is useful to start by establishing a <em>personal baseline</em>. Future runs of the RT can then be compared against the <em>personal baseline</em> to ascertain that the results have not been inadvertently affected by code developments. The <code class="docutils literal notranslate"><span class="pre">rt.sh</span> <span class="pre">-c</span></code> option is used to create a <em>personal baseline</em>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">./rt.sh -l rt.conf -c fv3 # create own reg. test baseline</span>
+</pre></div>
+</div>
+<p>Once the <em>personal baseline</em> has been created, future runs of the RT should be compared against the <em>personal baseline</em> using the <code class="docutils literal notranslate"><span class="pre">-m</span></code> option.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">./rt.sh -l rt.conf -m # compare against own baseline</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="the-script-rt-sh">
+<h4>9.2.3.3. The script rt.sh<a class="headerlink" href="#the-script-rt-sh" title="Permalink to this headline">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">rt.sh</span></code> is a bash shell file to run the RT and has the following options:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Usage: $0 -c &lt;model&gt; | -f | -s | -l &lt;file&gt; | -m | -r | -e | -h</span>
+<span class="go">-c  create new baseline results for &lt;model&gt;</span>
+<span class="go">-f  run full suite of regression tests</span>
+<span class="go">-s  run standard suite of regression tests</span>
+<span class="go">-l  run test specified in &lt;file&gt;</span>
+<span class="go">-m  compare against new baseline results</span>
+<span class="go">-r  use Rocoto workflow manager</span>
+<span class="go">-e  use ecFlow workflow manager</span>
+<span class="go">-h  display this help</span>
+</pre></div>
+</div>
+<p>The location of the run directories and <em>personal baseline</em> directories is controlled in <code class="docutils literal notranslate"><span class="pre">rt.sh</span></code> on a per-machine basis. The user is strongly advised to NOT modify the path to the <em>official baseline</em> directories.</p>
+<p>The <em>official baseline</em> directory is defined as:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">RTPWD=$DISKNM/trunk-yyyymmdd/${COMPILER} # on Cheyenne</span>
+<span class="go">RTPWD=$DISKNM/trunk-yyyymmdd             # elsewhere</span>
+</pre></div>
+</div>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">yyyymmdd</span></code> is the year, month and day the RT was created.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Modifying <code class="docutils literal notranslate"><span class="pre">$DISKNM</span></code> will break the RTs!</p>
+</div>
+<p><em>Personal baseline</em> results (see below) are stored in</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">NEW_BASELINE=${STMP}/${USER}/FV3_RT/REGRESSION_TEST</span>
+</pre></div>
+</div>
+<p>and RTs are run in <code class="docutils literal notranslate"><span class="pre">$RUNDIR_ROOT</span></code>.</p>
+<p>Example: <em>Theia</em></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">...</span>
+<span class="go">dprefix=/scratch4/NCEPDEV</span>
+<span class="go">DISKNM=$dprefix/nems/noscrub/emc.nemspara/RT</span>
+<span class="go">STMP=$dprefix/stmp4</span>
+<span class="go">PTMP=$dprefix/stmp3</span>
+<span class="go">..</span>
+</pre></div>
+</div>
+<p>In case a user does not have write permissions to <code class="docutils literal notranslate"><span class="pre">$STMP</span> <span class="pre">(/scratch4/NCEPDEV/stmp4/)</span></code>, <code class="docutils literal notranslate"><span class="pre">$STMP</span></code> must be modified without modifying <code class="docutils literal notranslate"><span class="pre">$DISKNM</span></code> (i.e. <code class="docutils literal notranslate"><span class="pre">dprefix</span></code>). Similarly, if the user does not have write permissions to <code class="docutils literal notranslate"><span class="pre">$PTMP</span></code>, the user can set the <code class="docutils literal notranslate"><span class="pre">$RUNDIR_ROOT</span></code> environment variable to change the location of the run directories as described below.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span> Overwrite default RUNDIR_ROOT <span class="k">if</span> environment variable RUNDIR_ROOT is <span class="nb">set</span>
+<span class="gp">RUNDIR_ROOT=${RUNDIR_ROOT:-${PTMP}/${USER}/FV3_RT}/rt_$$</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="non-ccpp-vs-ccpp-tests">
+<h4>9.2.3.4. Non-CCPP vs CCPP Tests<a class="headerlink" href="#non-ccpp-vs-ccpp-tests" title="Permalink to this headline">¶</a></h4>
+<p>While the official EMC RTs do not execute the CCPP code, GMTB provides RTs to exercise the CCPP in its various modes: <code class="docutils literal notranslate"><span class="pre">rt_ccpp_standalone.conf</span></code> tests the CCPP with dynamic build and <code class="docutils literal notranslate"><span class="pre">rt_ccpp_static.conf</span></code> tests the CCPP with static build. These tests compare the results of runs done using the CCPP against a previously generated <em>personal baseline</em> created without the CCPP by running <code class="docutils literal notranslate"><span class="pre">rt_ccpp_ref.conf</span></code>.  For this comparison, both the non-CCPP <em>personal baseline</em> and the tests using the CCPP are performed with code built with the <a class="reference internal" href="Glossary.html#term-repro"><span class="xref std std-term">REPRO</span></a> compiler options.</p>
+<p>The command below should be used to create a <em>personal baseline</em> using non-CCPP code compiled in <a class="reference internal" href="Glossary.html#term-repro"><span class="xref std std-term">REPRO</span></a> mode.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">./rt.sh -l rt_ccpp_ref.conf -c fv3 # create own reg. test baseline</span>
+</pre></div>
+</div>
+<p>Once the <em>personal baseline</em> in REPRO mode has been created, the CCPP tests can be run to compare against it. Use the <code class="docutils literal notranslate"><span class="pre">-l</span></code> option to select the test suite and the <code class="docutils literal notranslate"><span class="pre">-m</span></code> option to compare against the <em>personal baseline</em>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">./rt.sh -l rt_ccpp_standalone.conf -m # dynamic build</span>
+<span class="go">./rt.sh -l rt_ccpp_static.conf -m     # static build</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="compatibility-between-the-code-base-the-sdf-and-the-namelist-in-the-ufs-atmosphere">
+<h4>9.2.3.5. Compatibility between the Code Base, the SDF, and the Namelist in the UFS Atmosphere<a class="headerlink" href="#compatibility-between-the-code-base-the-sdf-and-the-namelist-in-the-ufs-atmosphere" title="Permalink to this headline">¶</a></h4>
+<p>The variable <code class="docutils literal notranslate"><span class="pre">suite_name</span></code> within the <code class="docutils literal notranslate"><span class="pre">namelist.input</span></code> file used in the UFS Atmosphere determines which suite will be employed at run time (e.g., <code class="docutils literal notranslate"><span class="pre">suite_name=FV3_GFS_v15</span></code>). It is the user’s responsibility to ascertain that the other variables in <code class="docutils literal notranslate"><span class="pre">namelist.input</span></code> are compatible with the chosen suite. When runs are executed using the RT framework described in the preceding sections, compatibility is assured. For new experiments, users are responsible for modifying the two files (<code class="docutils literal notranslate"><span class="pre">SDF</span></code> and <code class="docutils literal notranslate"><span class="pre">namelist.input</span></code>) consistently, since limited checks are in place.</p>
+<p>Information about the UFS Atmosphere physics namelist can be found with the CCPP Scientific Documentation at <a class="reference external" href="https://dtcenter.org/GMTB/v3.0/sci_doc/">https://dtcenter.org/GMTB/v3.0/sci_doc/</a>.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">9. Building and Running Host Models</a><ul>
+<li><a class="reference internal" href="#scm">9.1. SCM</a><ul>
+<li><a class="reference internal" href="#system-requirements-libraries-and-tools">9.1.1. System Requirements, Libraries, and Tools</a></li>
+<li><a class="reference internal" href="#building-and-running-the-scm">9.1.2. Building and Running the SCM</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ufs-atmosphere">9.2. UFS Atmosphere</a><ul>
+<li><a class="reference internal" href="#system-requirements-libraries-and-compilers">9.2.1. System Requirements, Libraries, and Compilers</a></li>
+<li><a class="reference internal" href="#building-the-ufs-atmosphere">9.2.2. Building the UFS Atmosphere</a></li>
+<li><a class="reference internal" href="#running-the-ufs-atmosphere-using-the-regression-tests-rts">9.2.3. Running the UFS Atmosphere Using the Regression Tests (RTs)</a><ul>
+<li><a class="reference internal" href="#overview-of-the-rts">9.2.3.1. Overview of the RTs</a></li>
+<li><a class="reference internal" href="#baselines">9.2.3.2. Baselines</a></li>
+<li><a class="reference internal" href="#the-script-rt-sh">9.2.3.3. The script rt.sh</a></li>
+<li><a class="reference internal" href="#non-ccpp-vs-ccpp-tests">9.2.3.4. Non-CCPP vs CCPP Tests</a></li>
+<li><a class="reference internal" href="#compatibility-between-the-code-base-the-sdf-and-the-namelist-in-the-ufs-atmosphere">9.2.3.5. Compatibility between the Code Base, the SDF, and the Namelist in the UFS Atmosphere</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="CCPPPreBuild.html"
+                        title="previous chapter">8. Technical Aspects of the CCPP <em>Prebuild</em></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="AddingNewSchemes.html"
+                        title="next chapter">10. Tips for Adding a New Scheme</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/BuildingRunningHostModels.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="AddingNewSchemes.html" title="10. Tips for Adding a New Scheme"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="CCPPPreBuild.html" title="8. Technical Aspects of the CCPP Prebuild"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">CCPP Technical  documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019 .
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
+    </div>
+  </body>
+</html>
