@@ -1,204 +1,33 @@
-
 <!DOCTYPE html>
-
-<meta http-equiv="refresh" content="0; url=./build/html/index.html" />
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta charset="utf-8" />
-    <title>CCPP Technical Documentation &#8212; CCPP Technical  documentation</title>
-    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
-    
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="1. CCPP Overview" href="Overview.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="Overview.html" title="1. CCPP Overview"
-             accesskey="N">next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">CCPP Technical  documentation</a> &#187;</li> 
-      </ul>
-    </div>  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
-  <div class="section" id="ccpp-technical-documentation">
-<h1>CCPP Technical Documentation<a class="headerlink" href="#ccpp-technical-documentation" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="Overview.html">1. CCPP Overview</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Overview.html#how-to-use-this-document">1.1. How to Use this Document</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="CompliantPhysicsParams.html">2. CCPP-Compliant Physics Parameterizations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="CompliantPhysicsParams.html#general-rules">2.1. General Rules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CompliantPhysicsParams.html#metadata-rules">2.2. Metadata Rules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CompliantPhysicsParams.html#input-output-variable-argument-rules">2.3. Input/output Variable (argument) Rules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CompliantPhysicsParams.html#coding-rules">2.4. Coding Rules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CompliantPhysicsParams.html#parallel-programming-rules">2.5. Parallel Programming Rules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CompliantPhysicsParams.html#scientific-documentation-rules">2.6. Scientific Documentation Rules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="CompliantPhysicsParams.html#doxygen-comments-and-commands">2.6.1. Doxygen Comments and Commands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="CompliantPhysicsParams.html#doxygen-documentation-style">2.6.2. Doxygen Documentation Style</a></li>
-<li class="toctree-l3"><a class="reference internal" href="CompliantPhysicsParams.html#doxygen-configuration">2.6.3. Doxygen Configuration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="CompliantPhysicsParams.html#including-metadata-information">2.6.4. Including metadata information</a></li>
-<li class="toctree-l3"><a class="reference internal" href="CompliantPhysicsParams.html#using-doxygen">2.6.5. Using Doxygen</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="ConfigBuildOptions.html">3. CCPP Configuration and Build Options</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ConstructingSuite.html">4. Constructing Suites</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="ConstructingSuite.html#suite-definition-file">4.1. Suite Definition File</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="ConstructingSuite.html#groups">4.1.1. Groups</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ConstructingSuite.html#subcycling">4.1.2. Subcycling</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ConstructingSuite.html#order-of-schemes">4.1.3. Order of Schemes</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="ConstructingSuite.html#interstitial-schemes">4.2. Interstitial Schemes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ConstructingSuite.html#sdf-examples">4.3. SDF Examples</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="ConstructingSuite.html#simplest-case-single-group-and-no-subcycling">4.3.1. Simplest Case: Single Group and no Subcycling</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ConstructingSuite.html#case-with-multiple-groups">4.3.2. Case with Multiple Groups</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ConstructingSuite.html#case-with-subcycling">4.3.3. Case with Subcycling</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ConstructingSuite.html#operational-gfs-v15-suite">4.3.4. Operational GFS v15 Suite</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="AutoGenPhysCaps.html">5. Autogenerated Physics <em>Caps</em></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="AutoGenPhysCaps.html#dynamic-build-caps">5.1. Dynamic Build <em>Caps</em></a></li>
-<li class="toctree-l2"><a class="reference internal" href="AutoGenPhysCaps.html#static-build-caps">5.2. Static Build Caps</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="HostSideCoding.html">6. Host Side Coding</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="HostSideCoding.html#variable-requirements-on-the-host-model-side">6.1. Variable Requirements on the Host Model Side</a></li>
-<li class="toctree-l2"><a class="reference internal" href="HostSideCoding.html#metadata-for-variable-in-the-host-model">6.2. Metadata for Variable in the Host Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="HostSideCoding.html#ccpp-variables-in-the-scm-and-ufs-atmosphere-host-models">6.3. CCPP Variables in the SCM and UFS Atmosphere Host Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="HostSideCoding.html#ccpp-api">6.4. CCPP API</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="HostSideCoding.html#data-structure-to-transfer-variables-between-dynamics-and-physics">6.4.1. Data Structure to Transfer Variables between Dynamics and Physics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="HostSideCoding.html#adding-and-retrieving-information-from-cdata-dynamic-build-option">6.4.2. Adding and Retrieving Information from cdata (dynamic build option)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="HostSideCoding.html#initializing-and-finalizing-the-ccpp">6.4.3. Initializing and Finalizing the CCPP</a></li>
-<li class="toctree-l3"><a class="reference internal" href="HostSideCoding.html#running-the-physics">6.4.4. Running the physics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="HostSideCoding.html#initializing-and-finalizing-the-physics">6.4.5. Initializing and Finalizing the Physics</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="HostSideCoding.html#host-caps">6.5. Host Caps</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="HostSideCoding.html#scm-host-cap">6.5.1. SCM Host Cap</a></li>
-<li class="toctree-l3"><a class="reference internal" href="HostSideCoding.html#ufs-atmosphere-host-cap">6.5.2. UFS Atmosphere Host Cap</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="CodeManagement.html">7. CCPP Code Management</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="CodeManagement.html#organization-of-the-code">7.1. Organization of the Code</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="CodeManagement.html#ufs-atmosphere">7.1.1. UFS Atmosphere</a></li>
-<li class="toctree-l3"><a class="reference internal" href="CodeManagement.html#scm">7.1.2. SCM</a></li>
-<li class="toctree-l3"><a class="reference internal" href="CodeManagement.html#directory-structure-of-ccpp-framework">7.1.3. Directory Structure of ccpp/framework</a></li>
-<li class="toctree-l3"><a class="reference internal" href="CodeManagement.html#directory-structure-of-ccpp-physics">7.1.4. Directory Structure of ccpp/physics</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="CodeManagement.html#github-workflow-setting-up-development-repositories">7.2. GitHub Workflow (setting up development repositories)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="CodeManagement.html#creating-forks">7.2.1. Creating Forks</a></li>
-<li class="toctree-l3"><a class="reference internal" href="CodeManagement.html#checking-out-the-code-nemsfv3gfs">7.2.2. Checking out the Code (NEMSfv3gfs)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="CodeManagement.html#checking-out-the-code-scm">7.2.3. Checking out the Code (SCM)</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="CodeManagement.html#committing-changes-to-your-fork">7.3. Committing Changes to your Fork</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CodeManagement.html#contributing-code-code-review-process">7.4. Contributing Code, Code Review Process</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="CodeManagement.html#creating-a-pr">7.4.1. Creating a PR</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="CCPPPreBuild.html">8. Technical Aspects of the CCPP <em>Prebuild</em></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="CCPPPreBuild.html#prebuild-script-function">8.1. <em>Prebuild</em> Script Function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CCPPPreBuild.html#script-configuration">8.2. Script Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CCPPPreBuild.html#running-ccpp-prebuild-py">8.3. Running ccpp_prebuild.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CCPPPreBuild.html#troubleshooting">8.4. Troubleshooting</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="BuildingRunningHostModels.html">9. Building and Running Host Models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="BuildingRunningHostModels.html#scm">9.1. SCM</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="BuildingRunningHostModels.html#system-requirements-libraries-and-tools">9.1.1. System Requirements, Libraries, and Tools</a></li>
-<li class="toctree-l3"><a class="reference internal" href="BuildingRunningHostModels.html#building-and-running-the-scm">9.1.2. Building and Running the SCM</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="BuildingRunningHostModels.html#ufs-atmosphere">9.2. UFS Atmosphere</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="BuildingRunningHostModels.html#system-requirements-libraries-and-compilers">9.2.1. System Requirements, Libraries, and Compilers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="BuildingRunningHostModels.html#building-the-ufs-atmosphere">9.2.2. Building the UFS Atmosphere</a></li>
-<li class="toctree-l3"><a class="reference internal" href="BuildingRunningHostModels.html#running-the-ufs-atmosphere-using-the-regression-tests-rts">9.2.3. Running the UFS Atmosphere Using the Regression Tests (RTs)</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="AddingNewSchemes.html">10. Tips for Adding a New Scheme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Acronyms.html">11. Acronyms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Glossary.html">12. Glossary</a></li>
-</ul>
-</div>
-</div>
-
-
-          </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h4>Next topic</h4>
-  <p class="topless"><a href="Overview.html"
-                        title="next chapter">1. CCPP Overview</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/index.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="Overview.html" title="1. CCPP Overview"
-             >next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">CCPP Technical  documentation</a> &#187;</li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2019 .
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
-    </div>
-  </body>
+<html>
+	<head>
+		<title>UFS MR Weather App v0.1 Public Release Documentation</title>
+		<!-- link to main stylesheet -->
+		<link rel="stylesheet" type="text/css" href="/css/main.css">
+	</head>
+	<body>
+		<nav>
+    		<ul>
+        		<li><a href="/">Home</a></li>
+	        	<li><a href="/UsersGuide/index.html">User's Guide</a></li>
+        		<li><a href="https://dtcenter.org/community-code/common-community-physics-package-ccpp/documentation">CCPP</a></li>
+    		</ul>
+		</nav>
+		<div class="container">
+    		<div class="blurb">
+        		<h1>UFS MR Weather App Documentation</h1>
+				<p>Here you can find a Users's Guide, links to external documentation, links to the development repository, and access to the Forum for support</p>
+    		</div><!-- /.blurb -->
+		</div><!-- /.container -->
+		<footer>
+    		<ul>
+        		<li><a href="https://ufscommunity.org">Forum</a></li>
+			<li><a href="/UsersGuide/index.html">User's Guide</a></li>	
+		   	<li><a href="https://dtcenter.org/community-code/common-community-physics-package-ccpp/documentation">CCPP</a></li>
+			</ul>
+		<li><a href="https://ufscommunity.org">Forum</a></li>
+		<li><a href="/UsersGuide/index.html">User's Guide</a></li>	
+		<li><a href="https://dtcenter.org/community-code/common-community-physics-package-ccpp/documentation">CCPP</a></li>
+		</footer>
+	</body>
 </html>
